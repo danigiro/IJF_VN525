@@ -16,19 +16,14 @@ al. (2021)
 ## Files
 
 -   `VN525.RData`: Australian Tourism Flows dataset
-
 -   `Ctools555.RData`: tools to balance the C matrix (VN525 -> VN555)
-
 -   **BaseForecasts**:
-
     -   `ETSlev/VN525_base_ets_lev.R`: ETS base forecasts
     -   `ETSlev/VN555/VN555_base.R`: VN555 ETS levels and SA base
         forecasts
     -   `VN525_features_residuals.R`: Seasonal Average residuals
     -   `VN525_features.R`: Seasonal Average forecasts
-
 -   **Reconciliation**:
-
     -   `ETSlev`:
         -   `VN555_cslccd_bCCCred.R`: LCC with ETS bts
         -   `VN555_cslccd_bLCC.R`: LxCC with ETS bts (x = number of
