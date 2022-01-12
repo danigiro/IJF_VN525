@@ -5,17 +5,16 @@
 
 <!-- badges: start -->
 <!-- badges: end -->
-<!-- badges: start -->
-<!-- badges: end -->
 
-The monthly time series reconciliation of the Australian Tourism Flows
-disaggregated by geographic divisions and purpose of travel, firstly
-studied by Wickramasuriya et al. (2019), and used by Hollyman et
-al. (2021)
+Forecast combination based reconciliation of the monthly Australian
+Tourism Demand series disaggregated by geographic divisions and purpose
+of travel (Di Fonzo and Girolimetto, 2022)
+
+The forecast reconciliation is performed using **FoReco 0.2.2**.
 
 ## Files
 
--   `VN525.RData`: Australian Tourism Flows dataset
+-   `VN525.RData`: Australian Tourism Flows dataset (Visitor Nights)
 -   `Ctools555.RData`: tools to balance the C matrix (VN525 -> VN555)
 -   **BaseForecasts**:
     -   `ETSlev/VN525_base_ets_lev.R`: ETS base forecasts
@@ -26,12 +25,10 @@ al. (2021)
 -   **Reconciliation**:
     -   `ETSlev`:
         -   `VN555_cslccd_bCCCred.R`: LCC with ETS bts
-        -   `VN555_cslccd_bLCC.R`: LxCC with ETS bts (x = number of
-            level)
+        -   `VN555_cslccd_bLCC.R`: LxCC with ETS bts (x = level number)
         -   `VN555_cslccd_mean_red.R`: LCC with SA bts
         -   `VN555_cslccd_mean.R`: CCC with SA bts
-        -   `VN555_cslccd_mLCC.R`: LxCC with SA bts (x = number of
-            level)
+        -   `VN555_cslccd_mLCC.R`: LxCC with SA bts (x = level number)
         -   `VN555_cslccd.R`: CCC with ETS bts and CCCH
         -   `VN525_htsrec_mean.R`: cross-sectional reconciliation with
             SA bts
@@ -46,11 +43,6 @@ al. (2021)
 
 ## References
 
-Hollyman, R., Petropoulos, F., Tipping, M.E., 2021. Understanding
-Forecast Reconciliation. European Journal of Operational Research 294,
-149–160. <doi:10.1016/j.ejor.2021.01.017>.
-
-Wickramasuriya, S.L., Athanasopoulos, G., Hyndman, R.J., 2019. Optimal
-Forecast Reconciliation for Hierarchical and Grouped Time Series Through
-Trace Minimization. Journal of the American Statistical Association 114,
-804–819. <doi:10.1080/01621459.2018.1448825>.
+Di Fonzo, T. and Girolimetto D. (2022). *Forecast combination based
+forecast reconciliation: insights and extensions*, preprint submitted to
+the International Journal of Forecasting
