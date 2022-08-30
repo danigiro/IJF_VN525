@@ -8,6 +8,7 @@
 #' 
 #' Reconcile forecasts (+ nn):
 #'       - mCCCexod (means + CCC + exogenous + diagonal cov)
+#'       - mCCCendod (means + CCC + exogenous + diagonal cov)
 #'
 #' Input files: VN555_base.RData
 #' Output files: VN555_cslccd_mean.RData
@@ -32,7 +33,7 @@ DFbase$Series <- factor(DFbase$Series, name555, ordered = TRUE)
 resmat_all <- Residuals_ETS
 K_vec <- unique(DFbase$K)
 time_cslev <- array(NA, dim = c(test_length, length(K_vec), 2),
-                    dimnames = list(NULL, K_vec, c("mCCCexod")))
+                    dimnames = list(NULL, K_vec, c("mCCCexod", "mCCCendod")))
 
 pb <- progress_bar$new(
   format = "lccrec Hollyman: [:bar] :percent eta: :eta", 
@@ -84,6 +85,22 @@ for (j in 1:test_length) { #test_length
     Df1 <- cbind(Fltr, "Forecasts" = as.vector(Recon_PointF),
                  "R-method" = "cslcc", "R-comb" = "mCCCexod", 
                  nn = all(Recon_PointF>=0), 
+                 FoReco = "direct")
+    Df1 <- Df1[c(names(DFbase), "nn", "FoReco")]
+    DF <- rbind(DF, Df1)
+    
+    # mCCCendod (means + CCC + endogenous + diagonal cov) ----
+    Start <- Sys.time()
+    objHe <- suppressMessages(lccrec(basef = basef, C = C, nl = nl,
+                                     const = "endo", CCC = TRUE, weights = fixv))
+    End <- Sys.time()
+    time_cslev[j,i,2] <- as.numeric(difftime(End, Start, units = "secs"))
+    
+    Recon_PointF <- objHe$recf
+    
+    Df1 <- cbind(Fltr, "Forecasts" = as.vector(Recon_PointF),
+                 "R-method" = "cslcc", "R-comb" = "mCCCendod",
+                 nn = all(Recon_PointF>=0),
                  FoReco = "direct")
     Df1 <- Df1[c(names(DFbase), "nn", "FoReco")]
     DF <- rbind(DF, Df1)
@@ -139,6 +156,26 @@ for(row_nn in 1:NROW(nn_data)){
     Start <- Sys.time()
     obj <- suppressMessages(lccrec(basef = basef, C = C, nl = nl, nn= TRUE,
                                    CCC = TRUE, weights = fixv[-c(1:NROW(C))],
+                                   settings = osqpSettings(verbose = FALSE,
+                                                           max_iter = 100000L,
+                                                           check_termination = 5,
+                                                           eps_abs = 1e-5,
+                                                           eps_rel = 1e-10,
+                                                           eps_dual_inf = 1e-07,
+                                                           #delta = 1e-5,
+                                                           polish_refine_iter = 10000,
+                                                           polish = TRUE)))
+    End <- Sys.time()
+    if(any(sapply(obj$info, function(x) any(x[,5]!=1 | x[,4]>1e-4)))){
+      cat("\n")
+      problem = c(problem, row_nn)
+      print(obj$info)
+      cat("\n")
+    }
+  }else if(ty == "mCCCendod"){
+    Start <- Sys.time()
+    obj <- suppressMessages(lccrec(basef = basef, C = C, nl = nl, nn= TRUE,
+                                   CCC = TRUE, weights = fixv, const = "endo",
                                    settings = osqpSettings(verbose = FALSE,
                                                            max_iter = 100000L,
                                                            check_termination = 5,

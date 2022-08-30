@@ -99,10 +99,34 @@ try(expr = {
   rm(list=setdiff(ls(), obj))
 }, silent = TRUE)
 
+## mixCCC endo----
+print("--------------------------")
+try(expr = {
+  load("./Reconciliation/ETSlev/VN555_CCCmix_endo.RData")
+  DFmix <- DFmix %>% filter(Series %in% series) %>%
+    mutate(Series = factor(Series, series, ordered = TRUE), 
+           K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))
+  i <- i + 1
+  all[[i]] <- mcb_data(DFmix)
+  rm(list=setdiff(ls(), obj))
+}, silent = TRUE)
+
 ## mixCCCred ----
 print("--------------------------")
 try(expr = {
   load("./Reconciliation/ETSlev/VN555_CCCmix_red.RData")
+  DFmix <- DFmix %>% filter(Series %in% series) %>%
+    mutate(Series = factor(Series, series, ordered = TRUE), 
+           K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))
+  i <- i + 1
+  all[[i]] <- mcb_data(DFmix)
+  rm(list=setdiff(ls(), obj))
+}, silent = TRUE)
+
+## mixCCCred_endo ----
+print("--------------------------")
+try(expr = {
+  load("./Reconciliation/ETSlev/VN555_CCCmix_red_endo.RData")
   DFmix <- DFmix %>% filter(Series %in% series) %>%
     mutate(Series = factor(Series, series, ordered = TRUE), 
            K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))
@@ -135,10 +159,34 @@ try(expr = {
   rm(list=setdiff(ls(), obj))
 }, silent = TRUE)
 
+## cslccd_mean_red endo ----
+print("--------------------------")
+try(expr = {
+  load("./Reconciliation/ETSlev/VN555_cslccd_mean_red_endo.RData")
+  DFcslcc <- DFcslcc %>% filter(Series %in% series) %>%
+    mutate(Series = factor(Series, series, ordered = TRUE), 
+           K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))
+  i <- i + 1
+  all[[i]] <- mcb_data(DFcslcc)
+  rm(list=setdiff(ls(), obj))
+}, silent = TRUE)
+
 ## cslccd_bCCCred ----
 print("--------------------------")
 try(expr = {
   load("./Reconciliation/ETSlev/VN555_cslccd_bCCCred.RData")
+  DFcslcc <- DFcslcc %>% filter(Series %in% series) %>%
+    mutate(Series = factor(Series, series, ordered = TRUE), 
+           K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))
+  i <- i + 1
+  all[[i]] <- mcb_data(DFcslcc)
+  rm(list=setdiff(ls(), obj))
+}, silent = TRUE)
+
+## cslccd_bCCCred_endo ----
+print("--------------------------")
+try(expr = {
+  load("./Reconciliation/ETSlev/VN555_cslccd_bCCCred_endo.RData")
   DFcslcc <- DFcslcc %>% filter(Series %in% series) %>%
     mutate(Series = factor(Series, series, ordered = TRUE), 
            K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))
@@ -159,10 +207,34 @@ try(expr = {
   rm(list=setdiff(ls(), obj))
 }, silent = TRUE)
 
+## cslccd_mLCCendo ----
+print("--------------------------")
+try(expr = {
+  load("./Reconciliation/ETSlev/VN555_cslccd_mLCCendo.RData")
+  DFcslev <- DFcslev %>% filter(Series %in% series) %>%
+    mutate(Series = factor(Series, series, ordered = TRUE), 
+           K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))
+  i <- i + 1
+  all[[i]] <- mcb_data(DFcslev)
+  rm(list=setdiff(ls(), obj))
+}, silent = TRUE)
+
 ## cslccd_bLCC ----
 print("--------------------------")
 try(expr = {
   load("./Reconciliation/ETSlev/VN555_cslccd_bLCC.RData")
+  DFcslev <- DFcslev %>% filter(Series %in% series) %>%
+    mutate(Series = factor(Series, series, ordered = TRUE), 
+           K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))
+  i <- i + 1
+  all[[i]] <- mcb_data(DFcslev)
+  rm(list=setdiff(ls(), obj))
+}, silent = TRUE)
+
+## cslccd_bLCC endo----
+print("--------------------------")
+try(expr = {
+  load("./Reconciliation/ETSlev/VN555_cslccd_bLCCendo.RData")
   DFcslev <- DFcslev %>% filter(Series %in% series) %>%
     mutate(Series = factor(Series, series, ordered = TRUE), 
            K = factor(K, c(12,6,4,3,2,1), ordered = TRUE))

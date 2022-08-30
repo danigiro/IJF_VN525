@@ -9,6 +9,8 @@
 #' Reconcile forecasts (+ nn):
 #'       - HCCCexod (Hollyman + CCC + exogenous + diagonal cov)
 #'       - bCCCexod (basef + CCC + exogenous + diagonal cov)
+#'       - HCCCendod (Hollyman + CCC + endogenous + diagonal cov)
+#'       - bCCCendod (basef + CCC + endogenous + diagonal cov)
 #'
 #' Input files: VN555_base.RData
 #' Output files: VN525_cslccd.RData
@@ -32,7 +34,8 @@ DFbase$Series <- factor(DFbase$Series, name555, ordered = TRUE)
 resmat_all <- Residuals_ETS
 K_vec <- unique(DFbase$K)
 time_cslev <- array(NA, dim = c(test_length, length(K_vec), 4),
-                    dimnames = list(NULL, K_vec, c("HCCCexod", "bCCCexod")))
+                    dimnames = list(NULL, K_vec, c("HCCCexod", "bCCCexod", 
+                                                   "HCCCendod", "bCCCendod")))
 
 pb <- progress_bar$new(
   format = "lccrec Hollyman: [:bar] :percent eta: :eta", 
@@ -108,6 +111,39 @@ for (j in 1:test_length) { #test_length
     
     Df1 <- cbind(Fltr, "Forecasts" = as.vector(Recon_PointF),
                  "R-method" = "cslcc", "R-comb" = "bCCCexod", 
+                 nn = all(Recon_PointF>=0), 
+                 FoReco = "direct")
+    Df1 <- Df1[c(names(DFbase), "nn", "FoReco")]
+    DF <- rbind(DF, Df1)
+    
+    # HCCCendod (Hollyman + CCC + endogenous + diagonal cov) ----
+    Start <- Sys.time()
+    objHe <- suppressMessages(lccrec(basef = basef, C = C, nl = nl, 
+                                     bnaive = bnaive[,-c(1:NROW(C))], const = "endo",
+                                     CCC = TRUE, weights = fixv))
+    End <- Sys.time()
+    time_cslev[j,i,3] <- as.numeric(difftime(End, Start, units = "secs"))
+    
+    Recon_PointF <- objHe$recf
+    
+    Df1 <- cbind(Fltr, "Forecasts" = as.vector(Recon_PointF),
+                 "R-method" = "cslcc", "R-comb" = "HCCCendod", 
+                 nn = all(Recon_PointF>=0), 
+                 FoReco = "direct")
+    Df1 <- Df1[c(names(DFbase), "nn", "FoReco")]
+    DF <- rbind(DF, Df1)
+    
+    # bCCCendod (basef + CCC + endogenous + diagonal cov) ----
+    Start <- Sys.time()
+    objbe <- suppressMessages(lccrec(basef = basef, C = C, nl = nl, const = "endo",
+                                     CCC = TRUE, weights = fixv))
+    End <- Sys.time()
+    time_cslev[j,i,4] <- as.numeric(difftime(End, Start, units = "secs"))
+    
+    Recon_PointF <- objbe$recf
+    
+    Df1 <- cbind(Fltr, "Forecasts" = as.vector(Recon_PointF),
+                 "R-method" = "cslcc", "R-comb" = "bCCCendod", 
                  nn = all(Recon_PointF>=0), 
                  FoReco = "direct")
     Df1 <- Df1[c(names(DFbase), "nn", "FoReco")]
@@ -195,6 +231,49 @@ for(row_nn in 1:NROW(nn_data)){
                                                            eps_abs = 1e-5, 
                                                            eps_rel = 1e-10,
                                                            #eps_prim_inf = 1e-16,
+                                                           eps_dual_inf = 1e-07,
+                                                           #delta = 1e-5,
+                                                           polish_refine_iter = 10000, 
+                                                           polish = TRUE)))
+    End <- Sys.time()
+    if(any(sapply(obj$info, function(x) any(x[,5]!=1 | x[,4]>1e-4)))){
+      cat("\n")
+      problem = c(problem, row_nn)
+      print(obj$info)
+      cat("\n")
+    }
+  }else if(ty == "HCCCendod"){
+    # HCCCendod (Hollyman + CCC + endogenous + diagonal cov + nn) ----
+    Start <- Sys.time()
+    obj <- suppressMessages(lccrec(basef = basef, C = C, nl = nl, nn= TRUE,
+                                   bnaive = bnaive[,-c(1:NROW(C))], const = "endo",
+                                   CCC = TRUE, weights = fixv,
+                                   settings = osqpSettings(verbose = FALSE,
+                                                           max_iter = 100000L,
+                                                           check_termination = 5,
+                                                           eps_abs = 1e-5, 
+                                                           eps_rel = 1e-10,
+                                                           eps_dual_inf = 1e-07,
+                                                           #delta = 1e-5,
+                                                           polish_refine_iter = 10000, 
+                                                           polish = TRUE)))
+    End <- Sys.time()
+    if(any(sapply(obj$info, function(x) any(x[,5]!=1 | x[,4]>1e-4)))){
+      cat("\n")
+      problem = c(problem, row_nn)
+      print(obj$info)
+      cat("\n")
+    }
+  }else if(ty == "bCCCendod"){
+    # bCCCendod (basef + CCC + endogenous + diagonal cov) ----
+    Start <- Sys.time()
+    obj <- suppressMessages(lccrec(basef = basef, C = C, nl = nl, nn= TRUE,
+                                   CCC = TRUE, weights = fixv, const = "endo",
+                                   settings = osqpSettings(verbose = FALSE,
+                                                           max_iter = 100000L,
+                                                           check_termination = 5,
+                                                           eps_abs = 1e-5, 
+                                                           eps_rel = 1e-10,
                                                            eps_dual_inf = 1e-07,
                                                            #delta = 1e-5,
                                                            polish_refine_iter = 10000, 
