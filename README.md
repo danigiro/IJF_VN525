@@ -8,7 +8,7 @@
 
 Forecast combination based reconciliation of the monthly Australian
 Tourism Demand series disaggregated by geographic divisions and purpose
-of travel (Di Fonzo and Girolimetto, 2022)
+of travel (Di Fonzo and Girolimetto, 2024)
 
 The forecast reconciliation is performed using **FoReco 0.2.2**.
 
@@ -59,7 +59,7 @@ The forecast reconciliation is performed using **FoReco 0.2.2**.
 
 ## References
 
-Di Fonzo, T. and Girolimetto D. (2022). *Forecast combination based
+Di Fonzo, T. and Girolimetto D. (2024). *Forecast combination based
 forecast reconciliation: insights and extensions*, International Journal
-of Forecasting, in press.
-[10.1016/j.ijforecast.2022.07.00](https://doi.org/10.1016/j.ijforecast.2022.07.001)
+of Forecasting, 40(2), pp. 490-514.
+doi:[10.1016/j.ijforecast.2022.07.00](https://doi.org/10.1016/j.ijforecast.2022.07.001)
